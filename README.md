@@ -1,4 +1,4 @@
-# AWS Serverless Kiro Power
+# Serverless Development on AWS Kiro Power
 
 A comprehensive Kiro Power for building and deploying serverless applications with AWS Lambda, SAM, API Gateway, and the complete AWS serverless ecosystem.
 
