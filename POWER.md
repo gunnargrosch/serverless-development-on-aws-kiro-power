@@ -24,6 +24,16 @@ Use SAM CLI for project initialization and deployment, Lambda Web Adapter for we
 
 **Authentication**: Requires AWS CLI configured with credentials and AWS SAM CLI installed.
 
+## When to Use This Power
+
+- Building new serverless applications with AWS Lambda and SAM
+- Deploying full-stack web applications to AWS Serverless
+- Setting up event-driven architectures with DynamoDB, Kinesis, SQS, or Kafka
+- Optimizing Lambda function performance and cost
+- Troubleshooting serverless application issues
+- Implementing serverless best practices and security patterns
+- Managing CloudWatch logs and metrics for serverless apps
+
 ## Available MCP Servers
 
 ### aws-serverless-mcp
@@ -31,255 +41,86 @@ Use SAM CLI for project initialization and deployment, Lambda Web Adapter for we
 **Connection:** Local MCP server via uvx
 **Authorization:** Uses AWS credentials from environment
 
-## Best Practices
+## Getting Started
 
-### Project Structure
-**Always use SAM templates** for consistent infrastructure:
-- Start with `sam init` for new projects
-- Use appropriate runtime (python3.12, nodejs22.x, etc.)
-- Follow SAM template best practices
-- Organize code in logical directories
+**For new users or testing the power:** Use the getting-started steering file for complete step-by-step guidance on prerequisites, safe testing commands, and development workflow. Access it with `readPowerSteering("aws-serverless", "getting-started.md")`.
 
-### Lambda Function Design
-**Optimize for performance and cost**:
-- Right-size memory allocation (128MB-10GB)
-- Use appropriate timeout values
-- Implement proper error handling
-- Enable X-Ray tracing for observability
-- Use environment variables for configuration
+**For creating new projects:** The getting-started guide covers both creating new serverless applications and working with existing ones, with proper directory handling and user confirmation.
 
-### Security
-**Follow least privilege principles**:
-- Use IAM roles with minimal permissions
-- Enable CloudTrail for audit logging
-- Use AWS Secrets Manager for sensitive data
-- Implement proper input validation
-- Enable VPC endpoints for private communication
+## Integration Guides
 
-### Event-Driven Architecture
-**For event processing**, use Event Source Mappings:
-- Configure appropriate batch sizes
-- Use dead letter queues for error handling
-- Monitor iterator age for streams
-- Implement idempotent processing
+**Event Source Mappings:** For setting up and optimizing Lambda triggers, use the `esm_guidance` MCP tool for framework-agnostic setup, or use `readPowerSteering("aws-serverless", "event-source-mappings.md")` for comprehensive ESM patterns.
 
-## Common Workflows
+**Web Application Deployment:** For deploying full-stack applications, use `readPowerSteering("aws-serverless", "web-app-deployment.md")` for complete deployment patterns with Lambda Web Adapter.
 
-### Workflow 1: Create and Deploy Serverless API
+**Performance Optimization:** For optimizing serverless applications, use `readPowerSteering("aws-serverless", "serverless-optimization.md")` for comprehensive performance and cost optimization strategies.
 
-```javascript
-// Step 1: Initialize SAM project
-sam_init({
-  project_name: "todo-api",
-  runtime: "python3.12",
-  project_directory: "/path/to/projects",
-  dependency_manager: "pip"
-});
+## Using MCP Tools
 
-// Step 2: Build application
-sam_build({
-  project_directory: "/path/to/projects/todo-api"
-});
-
-// Step 3: Deploy to AWS
-sam_deploy({
-  application_name: "todo-api",
-  project_directory: "/path/to/projects/todo-api",
-  region: "us-east-1"
-});
+### Get Lambda Guidance
+To check if Lambda is suitable for your use case:
+```
+usePower("aws-serverless", "aws-serverless-mcp", "get_lambda_guidance", {
+  "use_case": "REST API for todo application"
+})
 ```
 
-### Workflow 2: Deploy Full-Stack Web Application
-
-```javascript
-// Step 1: Deploy complete application
-deploy_webapp({
-  deployment_type: "fullstack",
-  project_name: "my-web-app",
-  project_root: "/path/to/web-app",
-  backend_configuration: {
-    runtime: "nodejs22.x",
-    port: 3000,
-    entry_point: "src/app.js"
-  },
-  frontend_configuration: {
-    built_assets_path: "./dist"
-  }
-});
-
-// Step 2: Configure custom domain
-configure_domain({
-  project_name: "my-web-app",
-  domain_name: "myapp.example.com"
-});
+### Initialize SAM Project
+```
+usePower("aws-serverless", "aws-serverless-mcp", "sam_init", {
+  "project_name": "my-app",
+  "runtime": "python3.12",
+  "project_directory": ".",
+  "dependency_manager": "pip"
+})
 ```
 
-### Workflow 3: Optimize Event Source Mapping
-
-```javascript
-// Step 1: Get ESM guidance
-esm_guidance({
-  event_source: "dynamodb",
-  guidance_type: "setup"
-});
-
-// Step 2: Analyze performance
-esm_optimize({
-  action: "analyze",
-  optimization_targets: ["throughput", "cost"],
-  event_source: "kinesis"
-});
-
-// Step 3: Troubleshoot issues
-esm_kafka_troubleshoot({
-  kafka_type: "msk",
-  issue_type: "diagnosis"
-});
+### Deploy Web Application
+```
+usePower("aws-serverless", "aws-serverless-mcp", "deploy_webapp", {
+  "deployment_type": "fullstack",
+  "project_name": "my-web-app",
+  "project_root": "."
+})
 ```
 
-### Workflow 4: Monitor and Debug
-
-```javascript
-// Step 1: Get application metrics
-get_metrics({
-  project_name: "todo-api",
-  start_time: "2024-01-01T00:00:00Z",
-  end_time: "2024-01-01T23:59:59Z",
-  resources: ["lambda", "apiGateway"]
-});
-
-// Step 2: Retrieve logs
-sam_logs({
-  stack_name: "todo-api",
-  start_time: "1hour ago",
-  end_time: "now"
-});
-
-// Step 3: Test locally
-sam_local_invoke({
-  project_directory: "/path/to/projects/todo-api",
-  resource_name: "TodoFunction",
-  event_file: "/path/to/event.json"
-});
+### Get Performance Metrics
+```
+usePower("aws-serverless", "aws-serverless-mcp", "get_metrics", {
+  "project_name": "my-app",
+  "resources": ["lambda", "apiGateway"]
+})
 ```
 
-## Best Practices Summary
-
-### ✅ Do:
-- **Use SAM templates** for infrastructure as code
-- **Test locally first** with sam_local_invoke
-- **Enable X-Ray tracing** for distributed debugging
-- **Implement proper error handling** and retry strategies
-- **Monitor CloudWatch metrics** for performance insights
-- **Use environment variables** for configuration
-- **Right-size Lambda memory** based on workload
-- **Use provisioned concurrency** for latency-sensitive functions
-- **Implement structured logging** for better observability
-- **Follow security best practices** with IAM roles
-
-### ❌ Don't:
-- **Hardcode credentials** in Lambda functions
-- **Use overly large deployment packages** (impacts cold starts)
-- **Ignore CloudWatch alarms** and monitoring
-- **Deploy without testing** locally first
-- **Use default timeouts** without consideration
-- **Forget to clean up** unused resources
-- **Skip security reviews** of IAM policies
-- **Use synchronous calls** for long-running processes
-- **Ignore cost optimization** opportunities
-- **Deploy to production** without proper CI/CD
-
-## Configuration
-
-**Authentication Required**: AWS CLI credentials and AWS SAM CLI
-
-**Setup Steps:**
-1. Install and configure AWS CLI with credentials
-2. Install AWS SAM CLI via pip, npm, or package managers
-3. Install Docker Desktop for local testing
-4. Configure in Kiro Powers UI when installing this power
-
-**Prerequisites**:
-- AWS account with appropriate permissions
-- AWS CLI configured with credentials
-- AWS SAM CLI installed
-- Docker Desktop running (for local testing)
-
-**MCP Configuration:**
-```json
-{
-  "mcpServers": {
-    "aws-serverless-mcp": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-serverless-mcp-server@latest",
-        "--allow-write",
-        "--allow-sensitive-data-access"
-      ],
-      "env": {
-        "AWS_PROFILE": "default",
-        "AWS_REGION": "us-east-1"
-      }
-    }
-  }
-}
+### Search Event Schemas
+```
+usePower("aws-serverless", "aws-serverless-mcp", "search_schema", {
+  "keywords": "aws.s3",
+  "registry_name": "aws.events"
+})
 ```
 
 ## Troubleshooting
 
-### Error: "AWS credentials not configured"
-**Cause:** Missing or invalid AWS credentials
-**Solution:**
-1. Run `aws configure` to set up credentials
-2. Verify with `aws sts get-caller-identity`
-3. Check AWS_PROFILE environment variable
-4. Ensure IAM permissions are sufficient
+### Prerequisites Not Met
+**Error:** AWS CLI or SAM CLI not configured
+**Solution:** Use the getting-started steering file to validate and configure prerequisites properly
 
-### Error: "SAM CLI not found"
-**Cause:** AWS SAM CLI not installed
-**Solution:**
-1. Install via `pip install aws-sam-cli`
-2. Verify with `sam --version`
-3. Add to PATH if necessary
-4. Restart terminal after installation
+### Permission Issues
+**Error:** AWS credentials or IAM permissions insufficient
+**Solution:** Verify AWS CLI configuration and ensure proper IAM permissions for serverless resources
 
-### Error: "Docker not running"
-**Cause:** Docker Desktop not started
-**Solution:**
-1. Start Docker Desktop application
-2. Verify with `docker --version`
-3. Ensure Docker daemon is running
-4. Check Docker permissions
+### Local Testing Fails
+**Error:** Docker not running or SAM local invoke fails
+**Solution:** Ensure Docker Desktop is running and use the troubleshooting steering file for systematic debugging
 
-### Error: "Lambda function timeout"
-**Cause:** Function execution exceeds timeout limit
-**Solution:**
-1. Increase timeout in SAM template
-2. Optimize function performance
-3. Check CloudWatch logs for bottlenecks
-4. Consider increasing memory allocation
+## Additional Resources
 
-### Error: "Permission denied"
-**Cause:** Insufficient IAM permissions
-**Solution:**
-1. Review IAM role permissions
-2. Add required policies for AWS services
-3. Check resource-based policies
-4. Verify cross-account access if applicable
+For detailed development workflow guidance, see the steering files which cover:
+- Complete project creation and testing workflows
+- Event Source Mapping configuration and optimization
+- Web application deployment patterns
+- Performance optimization strategies
+- Systematic troubleshooting approaches
 
-## Tips
-
-1. **Start with SAM templates** - Use `sam init` for consistent project structure
-2. **Test locally first** - Use `sam local invoke` before deploying
-3. **Monitor from day one** - Set up CloudWatch alarms early
-4. **Use steering files** - Load specific guidance for complex workflows
-5. **Follow AWS Well-Architected** - Security, performance, cost optimization
-6. **Implement CI/CD** - Automate testing and deployment
-7. **Use layers** - Share common dependencies across functions
-8. **Enable tracing** - X-Ray provides valuable debugging insights
-9. **Right-size resources** - Monitor and adjust based on usage
-10. **Stay updated** - Follow AWS serverless best practices
-
----
-
-**License:** MIT
+Use `readPowerSteering("aws-serverless", "getting-started")` for the complete getting started guide.
